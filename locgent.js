@@ -1,8 +1,9 @@
 // const fs = require("fs")
 const { readdir, readFile, writeFile } = require("fs/promises")
 
-exports.exports = async function () {
+;(async function () {
 	let mailDirectories = []
+	console.log(__dirname)
 	const SRC_PATH = "./src"
 	const DEFAULT_FOlDERS = ["badge", "button", "core", "divider", "grid", "notice", "summary", "table", "typography"]
 
@@ -48,7 +49,7 @@ exports.exports = async function () {
 			})
 		})
 	})
-}
+})()
 
 async function getFolders(path, output, defaultFolders) {
 	const filePromise = readdir(path, { encoding: "utf8" })
