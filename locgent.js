@@ -1,9 +1,7 @@
-// const fs = require("fs")
 const { readdir, readFile, writeFile } = require("fs/promises")
 
 ;(async function () {
 	let mailDirectories = []
-	console.log(__dirname)
 	const SRC_PATH = "./src"
 	const DEFAULT_FOlDERS = ["badge", "button", "core", "divider", "grid", "notice", "summary", "table", "typography"]
 
@@ -12,6 +10,7 @@ const { readdir, readFile, writeFile } = require("fs/promises")
 	await getFolders(SRC_PATH, mailDirectories, DEFAULT_FOlDERS).then(() => {
 		mailDirectories.forEach(async (dirName) => {
 			let srcFile = []
+			let srcLocVars = []
 			const EXAMPLE_FOLDER_PATH = `${SRC_PATH}/${dirName}/examples`
 
 			console.log("\x1b[33m%s\x1b[0m", `... 📝 Opening the src file in the ${dirName} folder ...`)
@@ -19,6 +18,11 @@ const { readdir, readFile, writeFile } = require("fs/promises")
 			await readF(`${EXAMPLE_FOLDER_PATH}/src.html`, srcFile).then(async () => {
 				let locFiles = []
 				const LOC_FOLDER_PATH = `${SRC_PATH}/${dirName}/localizations/`
+				const regexp = new RegExp("{[^}]*}", "g")
+				const srcVars = Array.from(srcFile[0].matchAll(regexp))
+				srcVars.forEach((e) => {
+					srcLocVars.push(e[0].replace("{", "").replace("}", ""))
+				})
 
 				console.log("\x1b[33m%s\x1b[0m", `... 📝 Checking the loc files in the ${dirName} folder ...`)
 
@@ -33,8 +37,12 @@ const { readdir, readFile, writeFile } = require("fs/promises")
 							let newSrcSource = srcFile[0]
 							let fileName = `${locFileName.replace(".json", "")}.html`
 
-							locFileData.locs.forEach((locFileParam) => {
-								newSrcSource = newSrcSource.replace(`{${locFileParam.name}}`, locFileParam.msg)
+							srcLocVars.forEach((locVar) => {
+								for (locVar in locFileData) {
+									if (locFileData.hasOwnProperty(locVar)) {
+										newSrcSource = newSrcSource.replace(`{${locVar}}`, locFileData[locVar])
+									}
+								}
 							})
 
 							console.log(
