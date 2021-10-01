@@ -21,7 +21,6 @@ const { readdir, readFile, writeFile } = require("fs/promises")
 				const REGEX = /\[[^\]]*\]/i
 				const PATTERN = new RegExp(REGEX, "g")
 				const SRC_VARS = Array.from(srcFile[0].matchAll(PATTERN))
-				console.log(SRC_VARS)
 				SRC_VARS.forEach((e) => {
 					srcLocVars.push(e[0].replace("[", "").replace("]", ""))
 				})
