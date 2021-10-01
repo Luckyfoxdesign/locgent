@@ -18,10 +18,12 @@ const { readdir, readFile, writeFile } = require("fs/promises")
 			await readF(`${EXAMPLE_FOLDER_PATH}/src.html`, srcFile).then(async () => {
 				let locFiles = []
 				const LOC_FOLDER_PATH = `${SRC_PATH}/${dirName}/localizations/`
-				const regexp = new RegExp("{[^}]*}", "g")
-				const srcVars = Array.from(srcFile[0].matchAll(regexp))
-				srcVars.forEach((e) => {
-					srcLocVars.push(e[0].replace("{", "").replace("}", ""))
+				const REGEX = /\[[^\]]*\]/i
+				const PATTERN = new RegExp(REGEX, "g")
+				const SRC_VARS = Array.from(srcFile[0].matchAll(PATTERN))
+				console.log(SRC_VARS)
+				SRC_VARS.forEach((e) => {
+					srcLocVars.push(e[0].replace("[", "").replace("]", ""))
 				})
 
 				console.log("\x1b[33m%s\x1b[0m", `... 📝 Checking the loc files in the ${dirName} folder ...`)
@@ -40,7 +42,7 @@ const { readdir, readFile, writeFile } = require("fs/promises")
 							srcLocVars.forEach((locVar) => {
 								for (locVar in locFileData) {
 									if (locFileData.hasOwnProperty(locVar)) {
-										newSrcSource = newSrcSource.replace(`{${locVar}}`, locFileData[locVar])
+										newSrcSource = newSrcSource.replace(`[${locVar}]`, locFileData[locVar])
 									}
 								}
 							})
