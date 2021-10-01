@@ -26,7 +26,7 @@ The script is very stupid and it works only if you follow the instructions below
 
 **Variable format**
 ```json
-{var_name}
+[var_name]
 ```
 
 The script doesn't work with nested JSON parameters for now.
